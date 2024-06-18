@@ -25,7 +25,7 @@ public class LiteAluraApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         Main mn = new Main(bookRepository,authorRepository);
-        mn.showMenu();
+        mn.ShowMenu();
 
     }
 }
