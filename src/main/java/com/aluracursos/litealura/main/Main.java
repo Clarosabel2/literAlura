@@ -1,5 +1,6 @@
 package com.aluracursos.litealura.main;
 
+import com.aluracursos.litealura.model.Author;
 import com.aluracursos.litealura.model.Book;
 import com.aluracursos.litealura.model.DataBook;
 import com.aluracursos.litealura.repository.AuthorRepository;
@@ -48,7 +49,16 @@ public class Main {
             sc.nextLine();
             switch (op) {
                 case 1:
-                    searchBook().forEach(e -> System.out.println(e.toString()));
+                    int[] i = {0}; // Array de un solo elemento para mantener el contador mutable
+                    List<Book> books = searchBooks();
+                    System.out.println("""
+                            ****************************************
+                                            Resultados
+                            """);
+                    books.forEach(e -> System.out.println( (++i[0]) + ". " + e.get_title()+" Autor: "+ e.get_author().get_name()));
+                    System.out.println("Ingrese el libro que desea guardar");
+                    Book book = books.get(sc.nextInt()-1);
+                    saveBook(book);
                     break;
                 case 2:
                     searchAuthor();
@@ -78,18 +88,24 @@ public class Main {
     private void searchAuthor() {
     }
 
-    public List<DataBook> searchBook() {
+    public List<Book> searchBooks() {
         System.out.println("Ingrese el titlo del libro: ");
         String titleBook = sc.nextLine();
         String json = apiclt.getData(URL_BASE + "?search=" + titleBook.replace(" ", "+"));
         List<DataBook> rBooks = (cvtData.getData(json, DataBook.class));
-        List<Book> books = rBooks.stream().map(e -> new Book(e.title(), e.authors(), e.dwlCounts(), e.languages())).collect(Collectors.toList());
-        saveBooks(rBooks);
-        return rBooks;
+        List<Book> books = rBooks.stream().map(
+                b -> new Book(b.title(),
+                        new Author(b.authors().get(0).name(), b.authors().get(0).birthYear(), b.authors().get(0).deathYeah()),
+                        b.languages().get(0),
+                        Integer.parseInt(b.dwlCounts()))).collect(Collectors.toList());
+
+        return books;
     }
 
-    public void saveBooks(List<DataBook> books) {
-
+    public void saveBook(Book b) {
+        _aRepository.save(b.get_author());
+        _bRepository.save(b);
     }
+
 
 }

@@ -8,8 +8,6 @@ import java.util.List;
 
 @Repository
 public interface BookRepository extends JpaRepository<Book,Long> {
-    Book findBy_titleIgnoreCase(String title);
 
-    List<Book> findBy_lenguagesContaining(String lenguage);
 
 }
