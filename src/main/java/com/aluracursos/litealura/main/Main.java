@@ -7,8 +7,6 @@ import com.aluracursos.litealura.repository.AuthorRepository;
 import com.aluracursos.litealura.repository.BookRepository;
 import com.aluracursos.litealura.service.Apiclient;
 import com.aluracursos.litealura.service.ConvertData;
-import com.fasterxml.jackson.databind.JsonNode;
-import org.springframework.data.jpa.repository.query.JSqlParserUtils;
 
 import java.util.List;
 import java.util.Scanner;
@@ -39,7 +37,7 @@ public class Main {
                                    <LiterAlura>
                     ----------------------------------------
                     1.Buscar libro por titulo
-                    2.Buscar Autor
+                    2.Mostrar Escritores
                     3.Mostrar Top 10 libros
                     4.Ver libros guardados
                     5.Salir
@@ -61,7 +59,7 @@ public class Main {
                     saveBook(book);
                     break;
                 case 2:
-                    searchAuthor();
+                    showAuthor();
                     break;
                 case 3:
                     getTopBooks();
@@ -80,12 +78,29 @@ public class Main {
     }
 
     private void showBooks() {
+        int[] i = {0};
+        _bRepository.findAll().forEach(e-> System.out.printf("""
+                Libro: %s
+                    Titulo: %s
+                    Autor: %s
+                    Idioma: %s
+                """,(++i[0]), e.get_title(),e.get_author().get_name(),e.get_lenguage()));
     }
 
     private void getTopBooks() {
+        System.out.println("Libros con mas Descargas:");
+        _bRepository.findAllByOrderBy_countDowloadsDesc(10).forEach(e-> System.out.println("Libro: "+ e.get_title()+" Descargas: "+e.get_countDowloads()));
     }
 
-    private void searchAuthor() {
+    private void showAuthor() {
+        int[] i = {0};
+        _aRepository.findAll().forEach(e-> System.out.printf("""
+                Autor: %s
+                    Nombre: %s
+                    Año Nacimieno: %s
+                    Año Fallecimiento: %s
+                    Libros realizados: %s
+                """,(++i[0]),e.get_name(),e.get_birthYear(),e.get_deathYear(),(e.get_books().toArray().length)));
     }
 
     public List<Book> searchBooks() {

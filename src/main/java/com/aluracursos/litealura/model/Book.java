@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -18,7 +17,7 @@ public class Book {
     private long _id;
     @Column(unique = true)
     private String _title;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Author _author;
     private String _lenguage;
     private int _countDowloads;
